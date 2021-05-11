@@ -1,25 +1,35 @@
 ﻿using System;
 using Raylib_cs;
+using System.Numerics;
 
 namespace Game
 {
     class Program
     {
+        public static IScene scene;
         static void Main(string[] args)
         {
             Raylib.InitWindow(1280, 720, "Game");
-            Raylib.SetTargetFPS(60);
-            var player = new Player();
+            Raylib.SetWindowState(ConfigFlag.FLAG_WINDOW_RESIZABLE);
+            Raylib.SetExitKey(KeyboardKey.KEY_END);
+            scene = new SceneWorld();
 
             while (!Raylib.WindowShouldClose())
             {
+                scene.Update();
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.WHITE);
-                player.Update();
+                scene.Draw();
                 Raylib.EndDrawing();
             }
 
             Raylib.CloseWindow();
         }
+    }
+
+    interface IScene
+    {
+        void Update();
+        void Draw();
     }
 }

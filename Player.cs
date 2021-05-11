@@ -7,19 +7,77 @@ using System.Numerics;
 
 namespace Game
 {
-    class Player
+    class Player : IBody
     {
-        public float speed = 300;
-        Vector2 position = new Vector2(300, 300);
-        CollisionBox box = new CollisionBox(Vector2.Zero, Vector2.One * 100);
-        List<CollisionBox> testBox = new List<CollisionBox>
+        float speed = 300;
+        float gravity = 980;
+        Vector2 velocity = Vector2.Zero;
+        float jumpForce = 700;
+        int maxJumps = 9999;
+        int currentJumps = 0;
+        public CollisionBody Body { get; set; }
+        Texture2D sprite;
+
+        public Player()
         {
-            new CollisionBox(Vector2.One * 200, Vector2.One * 200),
-            new CollisionBox(new Vector2(700, 300), Vector2.One * 100),
-            new CollisionBox(new Vector2(700, 400), Vector2.One * 100),
-            new CollisionBox(new Vector2(700, 500), Vector2.One * 100)
-        };
-        public void Update()
+            sprite = Raylib.LoadTexture("Content/Player.png");
+            Body = new CollisionBody(Vector2.One * 100, new Vector2(sprite.width, sprite.height));
+
+        }
+
+        public void Update(List<IBody> bodies)
+        {
+            PlatformerMovement(bodies);
+        }
+
+        public void Draw()
+        {
+            Raylib.DrawTextureEx(sprite, Body.position, 0, 1, Color.WHITE);
+        }
+
+        public void PlatformerMovement(List<IBody> bodies)
+        {
+            var delta = Raylib.GetFrameTime();
+            if (delta > 0.25) return;
+
+            var xdir = 0;
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
+                xdir = 1;
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_A))
+                xdir = -1;
+
+            velocity.X = xdir * speed;
+            velocity.Y += gravity * delta;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_W) && currentJumps < maxJumps)
+            {
+                velocity.Y = -jumpForce;
+                currentJumps += 1;
+            }
+            velocity.Y = Math.Clamp(velocity.Y, -1000, 1000);
+
+            var nextVel = velocity * delta;
+            var collision = Body.Collides(nextVel, bodies);
+            
+            if (collision.direction.X != 0)
+            {
+                nextVel.X = 0;
+            }
+            if (collision.direction.Y != 0)
+            {
+                nextVel.Y = 0;
+                velocity.Y = 0;
+            }
+            Body.position += nextVel;
+
+            if (collision.direction.Y == 1)
+            {
+                velocity.Y = 0;
+                currentJumps = 0;
+            }
+
+        }
+
+        public void TopDownMovement(List<IBody> bodies)
         {
             var dir = Vector2.Zero;
             if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
@@ -30,15 +88,18 @@ namespace Game
                 dir.Y = -1;
             if (Raylib.IsKeyDown(KeyboardKey.KEY_S))
                 dir.Y = 1;
-            if(dir != Vector2.Zero)
+            if (dir != Vector2.Zero)
                 dir = Vector2.Normalize(dir);
 
-            var velocity = dir * speed * Raylib.GetFrameTime();
-            box.Move(velocity, testBox);
-            box.Draw(Color.BLUE);
-            foreach (var box in testBox)
-                box.Draw(Color.RED);
-            //Raylib.DrawRectangle((int)position.X, (int)position.Y, 50, 50, Color.BLACK);
+            velocity = dir * speed * Raylib.GetFrameTime();
+            var collision = Body.Collides(velocity, bodies);
+
+            if (collision.direction.X == 0)
+                Body.position.X += velocity.X;
+            if (collision.direction.Y == 0)
+                Body.position.Y += velocity.Y;
+            if (collision.bodies.Count != 0)
+                Raylib.DrawRectangle((int)Body.position.X, (int)Body.position.Y, (int)Body.size.X, (int)Body.size.Y, Color.BLACK);
         }
     }
 }
