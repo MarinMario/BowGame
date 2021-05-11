@@ -16,23 +16,26 @@ namespace Game
         int maxJumps = 9999;
         int currentJumps = 0;
         public CollisionBody Body { get; set; }
-        Texture2D sprite;
+        AnimatedSprite sprite;
 
         public Player()
         {
-            sprite = Raylib.LoadTexture("Content/Player.png");
-            Body = new CollisionBody(Vector2.One * 100, new Vector2(sprite.width, sprite.height));
+            var t = Raylib.LoadTexture("Content/Player.png");
+            sprite = new AnimatedSprite(t, 2, 2, Vector2.Zero, 0.1f);
+            Body = new CollisionBody(Vector2.One * 100, new Vector2(64, 64));
 
         }
 
         public void Update(List<IBody> bodies)
         {
             PlatformerMovement(bodies);
+            sprite.position = Body.position;
+            sprite.Update();
         }
 
         public void Draw()
         {
-            Raylib.DrawTextureEx(sprite, Body.position, 0, 1, Color.WHITE);
+            sprite.Draw();
         }
 
         public void PlatformerMovement(List<IBody> bodies)
