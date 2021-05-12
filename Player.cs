@@ -17,11 +17,15 @@ namespace Game
         int currentJumps = 0;
         public CollisionBody Body { get; set; }
         AnimatedSprite sprite;
+        Texture2D sword;
+        Vector2 swordPos = Vector2.Zero;
 
         public Player()
         {
             var t = Raylib.LoadTexture("Content/Player.png");
-            sprite = new AnimatedSprite(t, 2, 2, Vector2.Zero, 0.1f);
+            sprite = new AnimatedSprite(t, 2, 2, 4, Vector2.Zero, 1f);
+            sword = Raylib.LoadTexture("Content/Sword.png");
+
             Body = new CollisionBody(Vector2.One * 100, new Vector2(64, 64));
 
         }
@@ -36,6 +40,7 @@ namespace Game
         public void Draw()
         {
             sprite.Draw();
+            Raylib.DrawTextureEx(sword, Body.position + swordPos, 0, 1, Color.WHITE);
         }
 
         public void PlatformerMovement(List<IBody> bodies)

@@ -9,28 +9,30 @@ namespace Game
         Texture2D texture;
         int columnCount;
         int rowCount;
+        int spriteCount;
         public Vector2 position;
-        public float speed;
+        public float frameSpeed;
 
-        float timer = 0;
+        float frameTimer = 0;
         int currentRow = 0;
         int currentColumn = 0;
 
-        public AnimatedSprite(Texture2D texture, int columnCount, int rowCount, Vector2 position, float speed)
+        public AnimatedSprite(Texture2D texture, int columnCount, int rowCount, int spriteCount, Vector2 position, float frameSpeed)
         {
             this.texture = texture;
             this.columnCount = columnCount;
             this.rowCount = rowCount;
+            this.spriteCount = spriteCount;
             this.position = position;
-            this.speed = speed;
+            this.frameSpeed = frameSpeed;
         }
 
         public void Update()
         {
-            timer += Raylib.GetFrameTime();
-            if(timer > speed)
+            frameTimer += Raylib.GetFrameTime();
+            if(frameTimer > frameSpeed)
             {
-                timer = 0;
+                frameTimer = 0;
                 currentColumn += 1;
                 if(currentColumn > columnCount - 1)
                 {
@@ -39,6 +41,12 @@ namespace Game
                     if (currentRow > rowCount - 1)
                         currentRow = 0;
                 }
+            }
+
+            if(currentColumn * rowCount + currentRow > spriteCount - 1)
+            {
+                currentColumn = 0;
+                currentRow = 0;
             }
         }
 
