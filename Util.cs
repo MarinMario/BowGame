@@ -7,6 +7,14 @@ namespace Game
 {
     static class Util
     {
+        public static float MoveTowards(this float number, float target, float speed, float margin)
+        {
+            var dir = number != target ? (target - number) * speed / Math.Abs(target - number) : 0;
+            if (Math.Abs(target - number) > margin)
+                return number + dir;
+            return number;
+        }
+
         public static Vector2 MoveTowards(this Vector2 vector, Vector2 target, float speed, float margin)
         {
             var result = vector;

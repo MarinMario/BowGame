@@ -46,7 +46,6 @@ namespace Game
         public void PlatformerMovement(List<IBody> bodies)
         {
             var delta = Raylib.GetFrameTime();
-            if (delta > 0.25) return;
 
             var xdir = 0;
             if (Raylib.IsKeyDown(KeyboardKey.KEY_D))

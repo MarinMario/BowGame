@@ -16,7 +16,9 @@ namespace Game
 
             while (!Raylib.WindowShouldClose())
             {
-                scene.Update();
+                var delta = Raylib.GetFrameTime();
+                if(delta != 0 && delta < 0.25)
+                    scene.Update();
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.WHITE);
                 scene.Draw();
