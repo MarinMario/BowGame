@@ -28,5 +28,14 @@ namespace Game
             return result;
         }
 
+        public static float ToAngle(this Vector2 vector)
+        {
+            return MathF.Atan2(vector.Y, vector.X);
+        }
+
+        public static Vector2 ToVector(this float angle)
+        {
+            return new Vector2(MathF.Sin(angle), MathF.Cos(angle));
+        }
     }
 }
