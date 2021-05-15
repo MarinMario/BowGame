@@ -31,7 +31,7 @@ namespace Game
                 speedTimer += delta;
                 speedTimer = Math.Clamp(speedTimer, 0, 1);
                 var r = (MathF.PI / 2 - rotation).ToVector();
-                currentArrow = new Arrow(position + r * 50 - r * 25 * speedTimer, rotation, speedTimer * 2000);
+                currentArrow = new Arrow(position + r * 50 - r * 25 * speedTimer, rotation, speedTimer * 2000, 100, 1000);
             }
             else if (currentArrow != null)
             {
@@ -64,21 +64,25 @@ namespace Game
         float rotation;
         Vector2 velocity;
         Vector2 lastPos;
+        float friction;
+        float fallSpeed;
 
-        public Arrow(Vector2 position, float rotation, float speed)
+        public Arrow(Vector2 position, float rotation, float speed, float friction, float fallSpeed)
         {
             this.position = position;
             this.rotation = rotation;
             this.velocity = (MathF.PI / 2 - rotation).ToVector() * speed;
             this.lastPos = position;
+            this.friction = friction;
+            this.fallSpeed = fallSpeed;
         }
 
         public void Update()
         {
             var delta = Raylib.GetFrameTime();
 
-            velocity.X += -Math.Sign(velocity.X) * 100 * delta;
-            velocity.Y += 1000 * delta;
+            velocity.X += -Math.Sign(velocity.X) * friction * delta;
+            velocity.Y += fallSpeed * delta;
 
             lastPos = position;
             position += velocity * delta;

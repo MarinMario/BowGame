@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Game
 {
@@ -34,6 +36,8 @@ namespace Game
                 body.Body.Draw(new Color(100, 100, 100, 100));
 
             Raylib.EndMode2D();
+
+            Gui.Button(Vector2.One * 300, Vector2.One * 100, "hehehe", GuiStyle.Default());
         }
 
 
