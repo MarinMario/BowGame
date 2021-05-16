@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Game
 {
@@ -12,6 +10,7 @@ namespace Game
         List<IBody> bodies = new List<IBody>();
         Player player = new Player();
         Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1);
+        LevelEditor levelEditor = new LevelEditor();
 
         public SceneWorld()
         {
@@ -25,6 +24,8 @@ namespace Game
             player.Update(bodies, camera.target - camera.offset);
             camera.offset = new Vector2(Raylib.GetScreenWidth(), Raylib.GetScreenHeight()) / 2 - player.Body.size / 2;
             camera.target = camera.target.MoveTowards(player.Body.position, Raylib.GetFrameTime() * 500, 1);
+
+            levelEditor.Update();
         }
 
         public void Draw()
@@ -37,7 +38,7 @@ namespace Game
 
             Raylib.EndMode2D();
 
-            Gui.Button(Vector2.One * 300, Vector2.One * 100, "hehehe", GuiStyle.Default());
+            levelEditor.Draw();
         }
 
 

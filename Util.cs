@@ -37,5 +37,7 @@ namespace Game
         {
             return new Vector2(MathF.Sin(angle), MathF.Cos(angle));
         }
+
+
     }
 }

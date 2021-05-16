@@ -5,18 +5,119 @@ using System.Numerics;
 
 namespace Game
 {
-    static class Gui
+    class Button
     {
-        public static void Button(Vector2 position, Vector2 size, string text, GuiStyle style)
+        public Vector2 position;
+        public Vector2 size;
+        public string text;
+        public GuiStyle style;
+
+        public Button(Vector2 position, Vector2 size, string text, GuiStyle style)
+        {
+            this.position = position;
+            this.size = size;
+            this.text = text;
+            this.style = style;
+        }
+
+        public bool Hover()
         {
             var m = Raylib.GetMousePosition();
-            var hover = m.X > position.X && m.Y > position.Y && m.X < position.X + size.X && m.Y < position.Y + size.Y;
-            var active = Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && hover;
-            var s = active ? style.active : hover ? style.hover : style.normal;
+            return m.X > position.X && m.Y > position.Y && m.X < position.X + size.X && m.Y < position.Y + size.Y;
+        }
 
+        public bool Active()
+        {
+            return Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && Hover();
+        }
+
+        public void Draw()
+        {
+            var s = Active() ? style.active : Hover() ? style.hover : style.normal;
             var textSize = Raylib.MeasureTextEx(s.font, text, s.fontSize, s.spacing);
             var textPos = position + size / 2 - textSize / 2;
 
+            Raylib.DrawRectangleV(position, size, s.backgroundColor);
+            Raylib.DrawRectangleLinesEx(new Rectangle(position.X, position.Y, size.X, size.Y), s.borderThickness, s.borderColor);
+            Raylib.DrawTextEx(s.font, text, textPos, s.fontSize, s.spacing, s.fontColor);
+        }
+    }
+
+    class TextBox
+    {
+        public Vector2 position;
+        public Vector2 size;
+        public string text;
+        public GuiStyle style;
+        bool active = false;
+        float backSpaceTimerSincePressed = 0;
+        float backSpaceTimer = 0;
+
+        public TextBox(Vector2 position, Vector2 size, string text, GuiStyle style)
+        {
+            this.position = position;
+            this.size = size;
+            this.text = text;
+            this.style = style;
+        }
+
+        public bool Hover()
+        {
+            var m = Raylib.GetMousePosition();
+            return m.X > position.X && m.Y > position.Y && m.X < position.X + size.X && m.Y < position.Y + size.Y;
+        }
+
+        public bool Active()
+        {
+            return active;
+        }
+
+        public void Draw()
+        {
+            if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
+                active = Hover();
+
+            var s = Active() ? style.active : Hover() ? style.hover : style.normal;
+            var textSize = Raylib.MeasureTextEx(s.font, text, s.fontSize, s.spacing);
+            var textPos = position + size / 2 - textSize / 2;
+
+            //logic for typing and deleting text in the textbox
+            if (active)
+            {
+                var key = Raylib.GetCharPressed();
+                if (text.Length > 0)
+                {
+                    if (Raylib.IsKeyPressed(KeyboardKey.KEY_BACKSPACE))
+                    {
+                        text = text[0..^1];
+                        backSpaceTimerSincePressed = 0.01f;
+                    }
+                    if (backSpaceTimerSincePressed != 0)
+                    {
+                        backSpaceTimerSincePressed += Raylib.GetFrameTime();
+                        if (backSpaceTimerSincePressed > 0.3)
+                            backSpaceTimerSincePressed = 0;
+                    }
+                    if (Raylib.IsKeyDown(KeyboardKey.KEY_BACKSPACE) && backSpaceTimerSincePressed == 0)
+                    {
+                        backSpaceTimer += Raylib.GetFrameTime();
+                        if (backSpaceTimer > 0.05)
+                        {
+                            text = text[0..^1];
+                            backSpaceTimer = 0;
+                        }
+                    }
+                    else
+                    {
+                        backSpaceTimer = 0;
+                    }
+                }
+
+                if (key >= 32 && key <= 125 && textSize.X < size.X - 4 * s.borderThickness)
+                    text += (char)key;
+            }
+
+            //drawing
             Raylib.DrawRectangleV(position, size, s.backgroundColor);
             Raylib.DrawRectangleLinesEx(new Rectangle(position.X, position.Y, size.X, size.Y), s.borderThickness, s.borderColor);
             Raylib.DrawTextEx(s.font, text, textPos, s.fontSize, s.spacing, s.fontColor);
