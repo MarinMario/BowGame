@@ -84,7 +84,6 @@ namespace Game
             //logic for typing and deleting text in the textbox
             if (active)
             {
-                var key = Raylib.GetCharPressed();
                 if (text.Length > 0)
                 {
                     if (Raylib.IsKeyPressed(KeyboardKey.KEY_BACKSPACE))
@@ -113,7 +112,8 @@ namespace Game
                     }
                 }
 
-                if (key >= 32 && key <= 125 && textSize.X < size.X - 4 * s.borderThickness)
+                var key = Raylib.GetCharPressed();
+                if (key >= 32 && key <= 125 && textSize.X < size.X - 5 * s.borderThickness)
                     text += (char)key;
             }
 
