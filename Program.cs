@@ -12,7 +12,7 @@ namespace Game
             Raylib.InitWindow(1280, 720, "Game");
             Raylib.SetWindowState(ConfigFlag.FLAG_WINDOW_RESIZABLE);
             Raylib.SetExitKey(KeyboardKey.KEY_END);
-            scene = new SceneLevelEditor();
+            scene = new World();
 
             while (!Raylib.WindowShouldClose())
             {

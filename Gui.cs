@@ -124,6 +124,36 @@ namespace Game
         }
     }
 
+    class TextureButton
+    {
+        public Texture2D texture;
+        float scale;
+        public float Scale
+        {
+            get => scale;
+            set
+            {
+                scale = value;
+                button.size = new Vector2(texture.width, texture.height) * value;
+            }
+        }
+        public Color tint;
+
+        public Button button;
+        public TextureButton(Vector2 position, float scale, Color tint, Texture2D texture)
+        {
+            this.button = new Button(position, Vector2.Zero, "", GuiStyle.Default());
+            this.texture = texture;
+            Scale = scale;
+            this.tint = tint;
+        }
+
+        public void Draw()
+        {
+            Raylib.DrawTextureEx(texture, button.position, 0, scale, tint);
+        }
+    }
+
     class GuiStyle
     {
         public Style normal = new Style();
