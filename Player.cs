@@ -21,7 +21,7 @@ namespace Game
         public Player()
         {
             sprite = new AnimatedSprite(Texture.Player, 2, 2, 4, Vector2.Zero, 0.2f);
-            Body = new CollisionBody(Vector2.One * 100, new Vector2(64, 64));
+            Body = new CollisionBody(new Vector2(200, -400), new Vector2(64, 64));
         }
 
         public void Update(List<IBody> bodies, Vector2 cameraPos)
@@ -105,8 +105,6 @@ namespace Game
                 Body.position.X += velocity.X;
             if (collision.direction.Y == 0)
                 Body.position.Y += velocity.Y;
-            if (collision.bodies.Count != 0)
-                Raylib.DrawRectangle((int)Body.position.X, (int)Body.position.Y, (int)Body.size.X, (int)Body.size.Y, Color.BLACK);
         }
     }
 }

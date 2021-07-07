@@ -30,7 +30,7 @@ namespace Game
             {
                 speedTimer += delta;
                 speedTimer = Math.Clamp(speedTimer, 0, 1);
-                var r = (MathF.PI / 2 - rotation).ToVector();
+                var r = (90 - rotation).ToVector();
                 currentArrow = new Arrow(position + r * 50 - r * 25 * speedTimer, rotation, speedTimer * 2000, 100, 1000);
             }
             else if (currentArrow != null)
@@ -47,7 +47,7 @@ namespace Game
                 Texture.Bow,
                 new Rectangle(0, 0, Texture.Bow.width, Texture.Bow.height),
                 new Rectangle(position.X, position.Y, Texture.Bow.width, Texture.Bow.height),
-                new Vector2(0, Texture.Bow.height / 2), rotation * 57.2f, Color.WHITE
+                new Vector2(0, Texture.Bow.height / 2), rotation, Color.WHITE
             );
 
             foreach (var arrow in arrows)
@@ -71,7 +71,7 @@ namespace Game
         {
             this.position = position;
             this.rotation = rotation;
-            this.velocity = (MathF.PI / 2 - rotation).ToVector() * speed;
+            this.velocity = (90 - rotation).ToVector() * speed;
             this.lastPos = position;
             this.friction = friction;
             this.fallSpeed = fallSpeed;
@@ -97,7 +97,7 @@ namespace Game
                 new Rectangle(0, 0, Texture.Arrow.width, Texture.Arrow.height),
                 new Rectangle(position.X, position.Y, Texture.Arrow.width, Texture.Arrow.height),
                 new Vector2(Texture.Arrow.width, Texture.Arrow.height) / 2,
-                rotation * 57.2f, Color.WHITE
+                rotation, Color.WHITE
             );
         }
     }

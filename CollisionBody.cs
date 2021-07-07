@@ -56,6 +56,13 @@ namespace Game
                 position.Y < body.position.Y + body.size.Y;
         }
 
+        public bool Contains(Vector2 point)
+        {
+            return
+                position.X + size.X > point.X && position.X < point.X &&
+                position.Y + size.Y > point.Y && position.Y < point.Y;
+        }
+
         public void Draw(Color color)
         {
             Raylib.DrawRectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y, color);
@@ -71,5 +78,11 @@ namespace Game
     interface IBody
     {
         CollisionBody Body { get; set; }
+    }
+
+    class SimpleBody : IBody
+    {
+        public CollisionBody Body { get; set; }
+        public SimpleBody(CollisionBody Body) { this.Body = Body; }
     }
 }

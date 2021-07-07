@@ -29,13 +29,13 @@ namespace Game
 
         bool showGrid = true;
 
-        MOType selectedObject = MOType.GrassTile;
+        MOName selectedObject = MOName.Grass;
 
         public LevelEditor()
         {
             foreach (var mo in Enum.GetValues(typeof(MOType)))
             {
-                var texture = Texture.MOTexture[(MOType)mo];
+                var texture = Texture.MOTexture[(MOName)mo].texture;
                 var scale = (float)cellSize / texture.width;
                 tileButtons.Add(new TextureButton(Vector2.Zero, scale, Color.WHITE, texture));
             }
@@ -53,7 +53,7 @@ namespace Game
                 tileButtons[i].button.position = new Vector2(Raylib.GetScreenWidth() - bannedX / 2 - b.size.X / 2, i * 70 + bannedY + 10);
                 tileButtons[i].tint = i == (int)selectedObject ? Color.WHITE : Color.GRAY;
                 if (b.Active())
-                    selectedObject = (MOType)i;
+                    selectedObject = (MOName)i;
             }
 
             //camera movement with middle button
@@ -79,7 +79,7 @@ namespace Game
                 if ((Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && showGrid) || Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
                 {
                     var p = camera.target + (mouse - camera.offset) / camera.zoom;
-                    var texture = Texture.MOTexture[selectedObject];
+                    var texture = Texture.MOTexture[selectedObject].texture;
                     var pos = showGrid ? PointToTile(p) : p - new Vector2(texture.width, texture.height) / 2;
                     var mapObject = new MapObject(selectedObject, pos.X, pos.Y);
                     var contains = false;
@@ -97,7 +97,7 @@ namespace Game
                     for (var i = objects.Count - 1; i >= 0; i--)
                     {
                         var o = objects[i];
-                        var t = Texture.MOTexture[o.Type];
+                        var t = Texture.MOTexture[o.Name].texture;
                         if(p.X > o.X && p.Y > o.Y && p.X < o.X + t.width && p.Y < o.Y + t.height)
                             objects.RemoveAt(i);
                     }
@@ -133,7 +133,7 @@ namespace Game
             Raylib.BeginMode2D(camera);
             {
                 foreach (var o in objects)
-                    Raylib.DrawTextureEx(Texture.MOTexture[o.Type], new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
+                    Raylib.DrawTextureEx(Texture.MOTexture[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
                    
                 if (showGrid)
                 {
@@ -141,6 +141,10 @@ namespace Game
                     for (var y = (int)p.Y; y < camera.target.Y + (height - camera.offset.Y) / camera.zoom; y += cellSize)
                         for (var x = (int)p.X; x < camera.target.X + (width - camera.offset.X) / camera.zoom; x += cellSize)
                         {
+                            if (y == 0)
+                                Raylib.DrawLineEx(new Vector2(x, y), new Vector2(x + cellSize, y), 5, Color.BLACK);
+                            if (x == 0)
+                                Raylib.DrawLineEx(new Vector2(x, y), new Vector2(x, y + cellSize), 5, Color.BLACK);
                             Raylib.DrawLine(x, y, x + cellSize, y, Color.BLACK);
                             Raylib.DrawLine(x, y, x, y + cellSize, Color.BLACK);
                         }
@@ -188,15 +192,16 @@ namespace Game
         }
     }
 
+    enum MOType { Tile, CollisionTile, Object, Monster}
     struct MapObject
     {
-        public MOType Type { get; set; }
+        public MOName Name { get; set; }
         public float X { get; set; }
         public float Y { get; set; }
 
-        public MapObject(MOType type, float x, float y)
+        public MapObject(MOName name, float x, float y)
         {
-            Type = type;
+            Name = name;
             X = x;
             Y = y;
         }
