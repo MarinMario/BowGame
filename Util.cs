@@ -70,7 +70,8 @@ namespace Game
 
         public void Draw()
         {
-            Raylib.DrawLineV(position, EndPosition(length), Color.RED);
+            Raylib.DrawLineEx(position, EndPosition(length), 2, Color.RED);
+            Raylib.DrawCircleV(EndPosition(length), 10, Color.BLUE);
         }
 
         Vector2 EndPosition(float length)

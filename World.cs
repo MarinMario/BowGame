@@ -64,7 +64,7 @@ namespace Game
             foreach (var m in monsters)
                 m.Draw();
 
-            player.Draw();
+            //player.Draw();
 
             //foreach (var body in bodies) body.Body.Draw(new Color(100, 0, 0, 100));
 

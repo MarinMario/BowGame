@@ -68,7 +68,7 @@ namespace Game
             Raylib.DrawCircleV(Body.position + Body.size / 2, 50, Color.BLACK);
             foreach (var leg in legs)
                 leg.Draw();
-            yPosRay.Draw();
+            //yPosRay.Draw();
         }
 
     }
@@ -76,7 +76,7 @@ namespace Game
     class SpiderLeg
     {
         public float rayOffset;
-        public Raycast targetRay = new Raycast(Vector2.Zero, 0, 500);
+        public Raycast targetRay = new Raycast(Vector2.Zero, 0, 1000);
         public InverseKSet leg;
 
         Vector2 nextPosition;
@@ -103,13 +103,14 @@ namespace Game
 
             if (targetPosition == Vector2.Zero)
                 leg.targetPosition = rayPosition + new Vector2(rayOffset * 2, -500);
-            if (Vector2.Distance(cast.position, leg.targetPosition) > Math.Abs(rayOffset) * 0.7)
+            if (Vector2.Distance(cast.position, leg.targetPosition) > Math.Abs(rayOffset)
+            && Vector2.Distance(cast.position, leg.position) < leg.CalcTotalLength())
             {
                 nextPosition = (cast.position + leg.targetPosition) / 2 - new Vector2(0, Math.Abs(rayOffset) * 0.3f);
                 targetPosition = cast.position;
             }
-            if (Vector2.Distance(nextPosition, leg.targetPosition) > 1)
-                leg.targetPosition += Vector2.Normalize(nextPosition - leg.targetPosition) * 600 * delta;
+            if (Vector2.Distance(nextPosition, leg.targetPosition) > 5)
+                leg.targetPosition += Vector2.Normalize(nextPosition - leg.targetPosition) * 1000 * delta;
             else
                 nextPosition = targetPosition;
 
@@ -121,13 +122,18 @@ namespace Game
                 //leg.targetPosition = leg.set[0].p2 + new Vector2(0, 5);
             }
 
+            if (dir.X > 0)
+                targetRay.angle = rayOffset < 0 ? 10 : 20;
+            if (dir.X < 0)
+                targetRay.angle = rayOffset > 0 ? -10 : -20;
+
         }
 
         public void Draw()
         {
             foreach (var segment in leg.set)
                 Raylib.DrawLineEx(segment.p1, segment.p2, 20, Color.BLACK);
-            targetRay.Draw();
+            //targetRay.Draw();
         }
     }
 }
