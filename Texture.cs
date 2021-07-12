@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Game
 {
     //public enum MOType { GrassTile, WallTile, House, Monster }
-    public enum MOName { Grass, Wall, House, Monster }
+    public enum TileName {  Earth1, Earth2, Earth3 }
     static class Texture
     {
         public static Texture2D Player = Raylib.LoadTexture("Content/Player.png");
@@ -19,23 +19,21 @@ namespace Game
         public static Texture2D WallTile = Raylib.LoadTexture("Content/TileTest2.png");
         public static Texture2D House = Raylib.LoadTexture("Content/House.png");
 
-        public static Dictionary<MOName, TTT> MOTexture = new Dictionary<MOName, TTT>
+        public static Dictionary<TileName, TTT> Tile = new Dictionary<TileName, TTT>
         {
-            { MOName.Grass, new TTT(MOType.CollisionTile, Raylib.LoadTexture("Content/TileTest.png")) },
-            { MOName.Wall, new TTT(MOType.CollisionTile, Raylib.LoadTexture("Content/TileTest2.png")) },
-            { MOName.House, new TTT (MOType.Object, Raylib.LoadTexture("Content/House.png")) },
-            { MOName.Monster, new TTT(MOType.Monster, Player) }
-            //{ "eh", Raylib.LoadTexture("Content/TileTest3.png") },
-            //{ "blea", Raylib.LoadTexture("Content/TileTest4.png") },
+            { TileName.Earth1, new TTT(TileType.Collision, Raylib.LoadTexture("Content/Tile/Earth1.png")) },
+            { TileName.Earth2, new TTT(TileType.Decor, Raylib.LoadTexture("Content/Tile/Earth2.png")) },
+            { TileName.Earth3, new TTT(TileType.Decor, Raylib.LoadTexture("Content/Tile/Earth3.png")) },
+
         };
     }
 
     //TTT = TypeTextureTuple
     struct TTT
     {
-        public MOType type;
+        public TileType type;
         public Texture2D texture;
-        public TTT(MOType type, Texture2D texture)
+        public TTT(TileType type, Texture2D texture)
         {
             this.type = type;
             this.texture = texture;

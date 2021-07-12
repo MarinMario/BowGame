@@ -33,13 +33,13 @@ namespace Game
         }
     }
 
-    class InverseKSet
+    class IKSet
     {
         public Vector2 position;
         public Vector2 targetPosition;
         public IKSegment[] set;
 
-        public InverseKSet(Vector2 position, Vector2 targetPosition, IKSegment[] set)
+        public IKSet(Vector2 position, Vector2 targetPosition, IKSegment[] set)
         {
             this.position = position;
             this.targetPosition = targetPosition;

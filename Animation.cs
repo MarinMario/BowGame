@@ -12,13 +12,13 @@ namespace Game
         float distance;
 
         float timer = 0;
-        int currentFrame = 1;
+        public int currentFrame = 0;
         public bool finished = false;
 
-        public Animation(KeyFrame[] keyFrames)
+        public Animation(KeyFrame[] keyFrames, float initialValue)
         {
             this.keyFrames = keyFrames;
-            value = keyFrames[0].value;
+            value = initialValue;
             distance = Math.Abs(keyFrames[currentFrame].value - value);
         }
 
@@ -27,7 +27,8 @@ namespace Game
             var delta = Raylib.GetFrameTime();
             timer += delta;
 
-            value = value.MoveTowards(keyFrames[currentFrame].value, distance * delta / keyFrames[currentFrame].speed, 1);
+            if (keyFrames[currentFrame].speed != 0)
+                value = value.MoveTowards(keyFrames[currentFrame].value, distance * delta / keyFrames[currentFrame].speed, 1);
             if (timer > keyFrames[currentFrame].speed)
             {
                 timer = 0;
@@ -36,13 +37,12 @@ namespace Game
                 if (currentFrame == keyFrames.Length)
                 {
                     finished = true;
-                    currentFrame = 1;
+                    currentFrame = 0;
                     value = keyFrames[0].value;
                 }
                 distance = Math.Abs(keyFrames[currentFrame].value - value);
             }
         }
-
     }
 
     struct KeyFrame

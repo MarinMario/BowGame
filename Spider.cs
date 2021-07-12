@@ -14,21 +14,14 @@ namespace Game
 
         SpiderLeg[] legs = new SpiderLeg[]
         {
-            new SpiderLeg(-150), new SpiderLeg(150), new SpiderLeg(-100), new SpiderLeg(100), new SpiderLeg(-200), new SpiderLeg(200)
+            new SpiderLeg(150, 200, 300), new SpiderLeg(-150, 200, 300)
         };
-
-
-        public Spider()
-        {
-            var p = Body.position + Body.size / 2;
-
-        }
 
         public void Update(List<IBody> bodies)
         {
             var delta = Raylib.GetFrameTime();
 
-            //movement
+            ////movement
             var dir = Vector2.Zero;
             if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
                 dir.X = 1;
@@ -77,18 +70,16 @@ namespace Game
     {
         public float rayOffset;
         public Raycast targetRay = new Raycast(Vector2.Zero, 0, 1000);
-        public InverseKSet leg;
+        public IKSet leg;
 
         Vector2 nextPosition;
         Vector2 targetPosition;
 
-        public SpiderLeg(float rayOffset)
+        public SpiderLeg(float rayOffset, float length1, float length2)
         {
             this.rayOffset = rayOffset;
-
-            var l = Math.Abs(rayOffset);
-            leg = new InverseKSet(Vector2.Zero, Vector2.Zero, new IKSegment[] {
-                new IKSegment(0, l + 50), new IKSegment(0, l + 100)
+            leg = new IKSet(Vector2.Zero, Vector2.Zero, new IKSegment[] {
+                new IKSegment(0, length1), new IKSegment(0, length2)
             });
         }
 
@@ -114,13 +105,13 @@ namespace Game
             else
                 nextPosition = targetPosition;
 
-            if (leg.set[0].p2.Y > leg.position.Y + 50)
-            {
-                leg.set[0].p2.Y = leg.position.Y + 50;
-                leg.set[1].p1 = leg.set[0].p2;
-                leg.set[1].CalcP2();
-                //leg.targetPosition = leg.set[0].p2 + new Vector2(0, 5);
-            }
+            //if (leg.set[0].p2.Y > leg.position.Y + 50)
+            //{
+            //    leg.set[0].p2.Y = leg.position.Y + 50;
+            //    leg.set[1].p1 = leg.set[0].p2;
+            //    leg.set[1].CalcP2();
+            //    //leg.targetPosition = leg.set[0].p2 + new Vector2(0, 5);
+            //}
 
             if (dir.X > 0)
                 targetRay.angle = rayOffset < 0 ? 10 : 20;
@@ -133,7 +124,7 @@ namespace Game
         {
             foreach (var segment in leg.set)
                 Raylib.DrawLineEx(segment.p1, segment.p2, 20, Color.BLACK);
-            //targetRay.Draw();
+            targetRay.Draw();
         }
     }
 }
