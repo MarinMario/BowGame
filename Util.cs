@@ -38,6 +38,11 @@ namespace Game
             angle /= 57.295f;
             return new Vector2(MathF.Sin(angle), MathF.Cos(angle));
         }
+
+        public static Vector2 ScaledMousePosition(this Camera2D camera)
+        {
+            return camera.target + (Raylib.GetMousePosition() - camera.offset) / camera.zoom;
+        }
     }
 
     struct Raycast

@@ -35,7 +35,7 @@ namespace Game
 
         public void Update()
         {
-            player.Update(bodies, camera.target - camera.offset);
+            player.Update(bodies, camera);
             camera.offset = new Vector2(Raylib.GetScreenWidth() / 2 - player.Body.size.X / 2, Raylib.GetScreenHeight());
             camera.target = camera.target.MoveTowards(new Vector2(player.Body.position.X, 0), Raylib.GetFrameTime() * 500, 1);
 
@@ -49,6 +49,7 @@ namespace Game
 
         public void Draw()
         {
+            camera.zoom = (float)Raylib.GetScreenHeight() / 1080f;
             Raylib.BeginMode2D(camera);
             
             foreach (var o in mapData)

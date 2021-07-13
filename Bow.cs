@@ -31,7 +31,7 @@ namespace Game
                 speedTimer += delta;
                 speedTimer = Math.Clamp(speedTimer, 0, 1);
                 var r = (90 - rotation).ToVector();
-                currentArrow = new Arrow(position + r * 50 - r * 25 * speedTimer, rotation, speedTimer * 2000, 100, 1000);
+                currentArrow = new Arrow(position + r * 50 - r * 25 * speedTimer, rotation, speedTimer * 3000, 100, 2000);
             }
             else if (currentArrow != null)
             {

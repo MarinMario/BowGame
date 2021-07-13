@@ -141,7 +141,7 @@ namespace Game
                     for (var y = (int)p.Y; y < camera.target.Y + (height - camera.offset.Y) / camera.zoom; y += cellSize)
                         for (var x = (int)p.X; x < camera.target.X + (width - camera.offset.X) / camera.zoom; x += cellSize)
                         {
-                            if (y == 0)
+                            if (y == 0 || y % 1080 == 0)
                                 Raylib.DrawLineEx(new Vector2(x, y), new Vector2(x + cellSize, y), 5, Color.BLACK);
                             if (x == 0)
                                 Raylib.DrawLineEx(new Vector2(x, y), new Vector2(x, y + cellSize), 5, Color.BLACK);

@@ -9,7 +9,7 @@ namespace Game
     class Player : IBody
     {
         float speed = 400;
-        float gravity = 980;
+        float gravity = 1200;
         Vector2 velocity = Vector2.Zero;
         float jumpForce = 700;
         int maxJumps = 9999;
@@ -22,19 +22,22 @@ namespace Game
         }, -30);
         Animation jumpAnim = new Animation(new KeyFrame[]
         {
-            new KeyFrame(0, 0), new KeyFrame(50, 0.1f)
+            new KeyFrame(0, 0), new KeyFrame(30, 0.1f)
         }, 0);
 
         float legAngle = -30;
+        Raycast walkingRay = new Raycast(Vector2.Zero, 0, 150);
 
         public Player()
         {
             Body = new CollisionBody(new Vector2(200, -400), new Vector2(30, 90));
         }
 
-        public void Update(List<IBody> bodies, Vector2 cameraPos)
+        public void Update(List<IBody> bodies, Camera2D camera)
         {
             PlatformerMovement(bodies);
+            walkingRay.position = Body.position + Body.size / 2;
+            var walkingCast = walkingRay.Cast(bodies);
 
             //animations
             if (velocity.Y < 0 && !jumpAnim.finished)
@@ -44,7 +47,7 @@ namespace Game
                     legAngle = jumpAnim.value;
                 walkAnim = new Animation(walkAnim.keyFrames, -legAngle);
             }
-            else if (velocity.Y == 0)
+            else if (walkingCast.length < walkingRay.maxLength)
             {
                 if (velocity.X != 0)
                 {
@@ -55,7 +58,7 @@ namespace Game
             }
 
             bow.position = Body.position + Body.size / 2 - new Vector2(0, 30);
-            bow.rotation = (cameraPos + Raylib.GetMousePosition() - bow.position).ToAngle();
+            bow.rotation = (camera.ScaledMousePosition() - bow.position).ToAngle();
             bow.Update(Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON));
         }
 
@@ -76,6 +79,7 @@ namespace Game
             Raylib.DrawCircleV(headPos, 20, headColor);
             bow.Draw();
             Raylib.DrawLineEx(armPos, armPos + (90 - bow.rotation).ToVector() * 40, 10, armColor);
+            walkingRay.Draw();
 
         }
 
