@@ -81,7 +81,7 @@ namespace Game
             Raylib.DrawCircleV(headPos, 20, headColor);
             bow.Draw();
             Raylib.DrawLineEx(armPos, armPos + (90 - bow.rotation).ToVector() * 40, 8, armColor);
-            //walkingRay.Draw();
+            walkingRay.Draw();
 
         }
 

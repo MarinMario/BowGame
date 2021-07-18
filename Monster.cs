@@ -78,33 +78,38 @@ namespace Game
             var delta = Raylib.GetFrameTime();
             rayToGround.position = Body.position + Body.size / 2;
             var groundCast = rayToGround.Cast(bodies);
-            var target = player.Body.position;
+            var target = player.Body.position + player.Body.size / 2;
+            var position = Body.position + Body.size / 2;
             var arrows = player.bow.arrows;
+            var nextVel = velocity * delta;
+            var collision = Body.Collides(nextVel, bodies);
 
             if (alive)
             {
                 attackTimer += delta;
-                if (attackTimer > 3)
+                if (attackTimer > 3 && attackTarget == null)
                 {
                     attackTarget = target;
                     attackTimer = 0;
+                    //velocity = Vector2.Zero;
                 }
                 if (attackTarget != null)
                 {
-                    velocity += Vector2.Normalize((Vector2)attackTarget - Body.position) * 5000 * delta;
-                    if (groundCast.length < 50)
+                    velocity += Vector2.Normalize((Vector2)attackTarget - velocity * 100 * delta - position) * 5000 * delta;
+                    if (collision.direction != Vector2.Zero || Vector2.Distance((Vector2)attackTarget, position) < 10)
                         attackTarget = null;
                 }
                 else
                 {
 
-                    velocity.Y = 0;
-                    velocity.X += Vector2.Normalize(target - Body.position).X * 1000 * delta;
+
+                    velocity.X += Vector2.Normalize(target - velocity * 100 * delta - position).X * 1000 * delta;
                     //this calculates y position, aka it keeps the body a distance above the ground, the distance is the variable distanceFromGround
                     if (groundCast.length < distanceFromGround - 1 || groundCast.length > distanceFromGround + 1)
                     {
                         var targetY = groundCast.position.Y - distanceFromGround - Body.size.Y;
-                        Body.position.Y = Body.position.Y.MoveTowards(targetY, 300 * delta, 1);
+                        //Body.position.Y = Body.position.Y.MoveTowards(targetY, 300 * delta, 1);
+                        velocity.Y += Math.Sign(targetY - velocity.Y - position.Y) * 1000 * delta;
                     }
                 }
 
@@ -121,9 +126,8 @@ namespace Game
                     }
                 }
 
-                if (Vector2.Distance(target, Body.position) < 100 && player.stopMovementTimer < 0)
+                if (Vector2.Distance(target, position) < 100 && player.stopMovementTimer < 0)
                 {
-                    Console.WriteLine("UESSSS");
                     player.stopMovementTimer = 1f;
                     player.velocity = new Vector2(Vector2.Normalize(velocity).X * 1000, -500);
                 }
@@ -144,9 +148,6 @@ namespace Game
             velocity.X = Math.Clamp(velocity.X, -1000, 1000);
             velocity.Y = Math.Clamp(velocity.Y, -1000, 1000);
 
-            var nextVel = velocity * delta;
-            var collision = Body.Collides(nextVel, bodies);
-
             if (collision.direction.X != 0)
             {
                 nextVel.X = 0;
@@ -166,7 +167,7 @@ namespace Game
 
         public void Draw()
         {
-            //rayToGround.Draw();
+            rayToGround.Draw();
             //Raylib.DrawCircleV(Body.position + Body.size / 2, Body.size.X / 2, Color.RED);
             var size = new Rectangle(0, 0, 64, 64);
             Raylib.DrawTexturePro(Texture.BatWing, size, new Rectangle(Body.position.X + 32, Body.position.Y + 32, 64, 64), new Vector2(64, 0), wingAngle.value, Color.WHITE);
@@ -174,6 +175,13 @@ namespace Game
             textureFlipped.width = -64;
             Raylib.DrawTexturePro(textureFlipped, size, new Rectangle(Body.position.X + 32, Body.position.Y + 32, 64, 64), Vector2.Zero, -wingAngle.value, Color.WHITE);
             Raylib.DrawTextureEx(alive ? Texture.BatHead : Texture.BatHeadDead, Body.position, 0, 1, Color.WHITE);
+
+            if (attackTarget != null)
+            {
+                Raylib.DrawLineEx((Vector2)attackTarget, Body.position + Body.size / 2, 5, Color.RED);
+                var p = (Vector2)attackTarget;
+                Raylib.DrawText(Vector2.Distance(p, Body.position + Body.size / 2).ToString(), (int)p.X, (int)p.Y, 30, Color.BLACK);
+            }
         }
     }
 }
