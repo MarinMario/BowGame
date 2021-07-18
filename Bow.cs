@@ -9,7 +9,7 @@ namespace Game
     {
         public Vector2 position;
         public float rotation;
-        List<Arrow> arrows = new List<Arrow>();
+        public List<Arrow> arrows = new List<Arrow>();
         Arrow currentArrow;
         float speedTimer = 0;
 
@@ -56,13 +56,18 @@ namespace Game
             if (currentArrow != null)
                 currentArrow.Draw();
         }
+
+        public void Remove(Arrow arrow)
+        {
+
+        }
     }
 
     class Arrow
     {
-        Vector2 position;
+        public Vector2 position;
         float rotation;
-        Vector2 velocity;
+        public Vector2 velocity;
         Vector2 lastPos;
         float friction;
         float fallSpeed;
@@ -99,6 +104,8 @@ namespace Game
                 new Vector2(Texture.Arrow.width, Texture.Arrow.height) / 2,
                 rotation, Color.WHITE
             );
+
+            Raylib.DrawCircleV(position, 5, Color.BLUE);
         }
     }
 }

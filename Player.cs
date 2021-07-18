@@ -10,10 +10,12 @@ namespace Game
     {
         float speed = 400;
         float gravity = 1200;
-        Vector2 velocity = Vector2.Zero;
+        public Vector2 velocity = Vector2.Zero;
         float jumpForce = 700;
-        int maxJumps = 9999;
+        int maxJumps = 999;
         int currentJumps = 0;
+        public float stopMovementTimer = 0;
+
         public CollisionBody Body { get; set; }
         public Bow bow = new Bow(Vector2.Zero, 0);
         Animation walkAnim = new Animation(new KeyFrame[]
@@ -47,7 +49,7 @@ namespace Game
                     legAngle = jumpAnim.value;
                 walkAnim = new Animation(walkAnim.keyFrames, -legAngle);
             }
-            else if (walkingCast.length < walkingRay.maxLength)
+            else if (walkingCast.length < walkingRay.maxLength && stopMovementTimer < 0)
             {
                 if (velocity.X != 0)
                 {
@@ -78,8 +80,8 @@ namespace Game
             Raylib.DrawLineEx(armPos, headPos, 10, headColor);
             Raylib.DrawCircleV(headPos, 20, headColor);
             bow.Draw();
-            Raylib.DrawLineEx(armPos, armPos + (90 - bow.rotation).ToVector() * 40, 10, armColor);
-            walkingRay.Draw();
+            Raylib.DrawLineEx(armPos, armPos + (90 - bow.rotation).ToVector() * 40, 8, armColor);
+            //walkingRay.Draw();
 
         }
 
@@ -93,14 +95,25 @@ namespace Game
             if (Raylib.IsKeyDown(KeyboardKey.KEY_A))
                 xdir = -1;
 
-            velocity.X = xdir * speed;
             velocity.Y += gravity * delta;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_W) && currentJumps < maxJumps)
-            {
-                velocity.Y = -jumpForce;
-                currentJumps += 1;
-            }
             velocity.Y = Math.Clamp(velocity.Y, -1000, 1000);
+
+
+            stopMovementTimer -= delta;
+            if (stopMovementTimer <= 0)
+            {
+                velocity.X = xdir * speed;
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_W) && currentJumps < maxJumps)
+                {
+                    velocity.Y = -jumpForce;
+                    currentJumps += 1;
+                }
+            }
+            else
+                velocity.X = velocity.X.MoveTowards(0, 500 * delta, 1);
+
+
+
 
             var nextVel = velocity * delta;
             var collision = Body.Collides(nextVel, bodies);
@@ -145,5 +158,6 @@ namespace Game
             if (collision.direction.Y == 0)
                 Body.position.Y += velocity.Y;
         }
+
     }
 }

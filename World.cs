@@ -12,6 +12,7 @@ namespace Game
         Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1);
         List<MapObject> mapData = LevelEditor.Load("test");
         List<Monster> monsters = new List<Monster>();
+        Bat bat = new Bat(new Vector2(300, -600));
 
 
         public World()
@@ -42,8 +43,7 @@ namespace Game
             if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) && Raylib.IsKeyPressed(KeyboardKey.KEY_L))
                 Program.scene = new LevelEditor();
 
-            foreach (var m in monsters)
-                m.Update(bodies);
+            bat.Update(player, bodies);
 
         }
 
@@ -55,8 +55,7 @@ namespace Game
             foreach (var o in mapData)
                 Raylib.DrawTextureEx(Texture.Tile[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
 
-            foreach (var m in monsters)
-                m.Draw();
+            bat.Draw();
 
             player.Draw();
 

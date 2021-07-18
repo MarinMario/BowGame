@@ -14,10 +14,9 @@ namespace Game
         public static Texture2D Bow = Raylib.LoadTexture("Content/Bow.png");
         public static Texture2D Arrow = Raylib.LoadTexture("Content/Arrow.png");
 
-
-        public static Texture2D GrassTile = Raylib.LoadTexture("Content/TileTest.png");
-        public static Texture2D WallTile = Raylib.LoadTexture("Content/TileTest2.png");
-        public static Texture2D House = Raylib.LoadTexture("Content/House.png");
+        public static Texture2D BatHead = Raylib.LoadTexture("Content/BatHead.png");
+        public static Texture2D BatHeadDead= Raylib.LoadTexture("Content/BatHeadDead.png");
+        public static Texture2D BatWing = Raylib.LoadTexture("Content/BatWing.png");
 
         public static Dictionary<TileName, TTT> Tile = new Dictionary<TileName, TTT>
         {
