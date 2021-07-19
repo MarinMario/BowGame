@@ -45,20 +45,24 @@ namespace Game
     //    }
     //}
 
-    interface Monster
+    interface IMonster
     {
-        CollisionBody Body { get; set; }
         int Health { get; set; }
+        void TakeDamage(int damage, Vector2 velocity);
     }
 
-    class Bat : Monster
+    class Bat : IMonster, IBody
     {
         public CollisionBody Body { get; set; }
-        public int Health { get; set; }
+        public int Health { get; set; } = 100;
         bool alive = true;
         Raycast rayToGround = new Raycast(Vector2.Zero, 0, 1000);
         int distanceFromGround = 500;
-        Vector2 velocity = Vector2.Zero;
+        public Vector2 velocity = Vector2.Zero;
+        float friction = 100;
+        float speed = 1000;
+        float attackSpeed = 5000;
+        float gravity = 1200;
         Animation wingAngle = new Animation(new KeyFrame[]
         {
             new KeyFrame(20, 0), new KeyFrame(70, 0.3f), new KeyFrame(20, 0.3f)
@@ -86,6 +90,7 @@ namespace Game
 
             if (alive)
             {
+                //every few seconds the attackTimer resets and chooses a target position so the bat can go towards it
                 attackTimer += delta;
                 if (attackTimer > 3 && attackTarget == null)
                 {
@@ -93,38 +98,31 @@ namespace Game
                     attackTimer = 0;
                     //velocity = Vector2.Zero;
                 }
+
                 if (attackTarget != null)
                 {
-                    velocity += Vector2.Normalize((Vector2)attackTarget - velocity * 100 * delta - position) * 5000 * delta;
+                    //this moves the bat towards the target position in an attack and if it hits the floor or is very close to the target then it'll go back to a set distance above the ground
+                    velocity += Vector2.Normalize((Vector2)attackTarget - velocity * friction * delta - position) * attackSpeed * delta;
                     if (collision.direction != Vector2.Zero || Vector2.Distance((Vector2)attackTarget, position) < 10)
                         attackTarget = null;
                 }
                 else
                 {
-
-
-                    velocity.X += Vector2.Normalize(target - velocity * 100 * delta - position).X * 1000 * delta;
-                    //this calculates y position, aka it keeps the body a distance above the ground, the distance is the variable distanceFromGround
+                    velocity.X += Vector2.Normalize(target - velocity * friction * delta - position).X * speed * delta;
+                    //this calculates y position, aka it keeps the bat a distance above the ground, the distance is the variable distanceFromGround
                     if (groundCast.length < distanceFromGround - 1 || groundCast.length > distanceFromGround + 1)
                     {
                         var targetY = groundCast.position.Y - distanceFromGround - Body.size.Y;
-                        //Body.position.Y = Body.position.Y.MoveTowards(targetY, 300 * delta, 1);
                         velocity.Y += Math.Sign(targetY - velocity.Y - position.Y) * 1000 * delta;
                     }
                 }
 
                 for (var i = arrows.Count - 1; i >= 0; i--)
-                {
                     if (Body.Contains(arrows[i].position))
                     {
-                        Health -= 25;
-                        attackTimer = 0;
-                        var dir = arrows[i].velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(arrows[i].velocity);
-                        //attackTarget = Body.position + dir * 200;
-                        velocity = arrows[i].velocity;
+                
                         arrows.RemoveAt(i);
                     }
-                }
 
                 if (Vector2.Distance(target, position) < 100 && player.stopMovementTimer < 0)
                 {
@@ -133,16 +131,14 @@ namespace Game
                 }
 
                 wingAngle.Play();
+
+                if (Health <= 0)
+                    alive = false;
             }
             else
             {
-                if (groundCast.length > 10)
-                {
-                    velocity.Y += 1000 * delta;
-                    velocity.X = velocity.X.MoveTowards(0, 500 * delta, 1);
-                }
-                else
-                    velocity.Y = 0;
+                velocity.Y += gravity * delta;
+                velocity.X -= velocity.X * delta;
             }
 
             velocity.X = Math.Clamp(velocity.X, -1000, 1000);
@@ -158,30 +154,22 @@ namespace Game
                 velocity.Y = 0;
             }
             Body.position += nextVel;
-
-            if (Health <= 0 && alive)
-            {
-                alive = false;
-            }
         }
 
         public void Draw()
         {
-            rayToGround.Draw();
-            //Raylib.DrawCircleV(Body.position + Body.size / 2, Body.size.X / 2, Color.RED);
             var size = new Rectangle(0, 0, 64, 64);
             Raylib.DrawTexturePro(Texture.BatWing, size, new Rectangle(Body.position.X + 32, Body.position.Y + 32, 64, 64), new Vector2(64, 0), wingAngle.value, Color.WHITE);
             var textureFlipped = Texture.BatWing;
             textureFlipped.width = -64;
             Raylib.DrawTexturePro(textureFlipped, size, new Rectangle(Body.position.X + 32, Body.position.Y + 32, 64, 64), Vector2.Zero, -wingAngle.value, Color.WHITE);
             Raylib.DrawTextureEx(alive ? Texture.BatHead : Texture.BatHeadDead, Body.position, 0, 1, Color.WHITE);
+        }
 
-            if (attackTarget != null)
-            {
-                Raylib.DrawLineEx((Vector2)attackTarget, Body.position + Body.size / 2, 5, Color.RED);
-                var p = (Vector2)attackTarget;
-                Raylib.DrawText(Vector2.Distance(p, Body.position + Body.size / 2).ToString(), (int)p.X, (int)p.Y, 30, Color.BLACK);
-            }
+        public void TakeDamage(int damage, Vector2 velocity)
+        {
+            Health -= damage;
+            this.velocity = velocity;
         }
     }
 }

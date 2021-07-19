@@ -19,12 +19,20 @@ namespace Game
             this.rotation = rotation;
         }
 
-        public void Update(bool charge)
+        public void Update(bool charge, List<IBody> envBodies, List<IBody> monsterBodies)
         {
             var delta = Raylib.GetFrameTime();
 
             foreach (var arrow in arrows)
-                arrow.Update();
+            {
+                var update = true;
+                foreach (var body in envBodies)
+                    if (body.Body.Contains(arrow.position))
+                        update = false;
+                        
+                if(update) arrow.Update();
+            }
+
 
             if (charge)
             {
@@ -39,6 +47,14 @@ namespace Game
                 currentArrow = null;
                 speedTimer = 0;
             }
+
+            foreach (var body in monsterBodies)
+                for (var i = arrows.Count - 1; i >= 0; i--)
+                    if (body.Body.Contains(arrows[i].position) && (body as IMonster).Health > 0)
+                    {
+                        (body as IMonster).TakeDamage(50, arrows[i].velocity);
+                        arrows.RemoveAt(i);
+                    }
         }
 
         public void Draw()
@@ -55,11 +71,6 @@ namespace Game
 
             if (currentArrow != null)
                 currentArrow.Draw();
-        }
-
-        public void Remove(Arrow arrow)
-        {
-
         }
     }
 

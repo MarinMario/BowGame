@@ -35,11 +35,11 @@ namespace Game
             Body = new CollisionBody(new Vector2(200, -400), new Vector2(30, 90));
         }
 
-        public void Update(List<IBody> bodies, Camera2D camera)
+        public void Update(List<IBody> envBodies, List<IBody> monsterBodies, Camera2D camera)
         {
-            PlatformerMovement(bodies);
+            PlatformerMovement(envBodies);
             walkingRay.position = Body.position + Body.size / 2;
-            var walkingCast = walkingRay.Cast(bodies);
+            var walkingCast = walkingRay.Cast(envBodies);
 
             //animations
             if (velocity.Y < 0 && !jumpAnim.finished)
@@ -61,7 +61,7 @@ namespace Game
 
             bow.position = Body.position + Body.size / 2 - new Vector2(0, 30);
             bow.rotation = (camera.ScaledMousePosition() - bow.position).ToAngle();
-            bow.Update(Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON));
+            bow.Update(Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON), envBodies, monsterBodies);
         }
 
         public void Draw()
@@ -81,8 +81,7 @@ namespace Game
             Raylib.DrawCircleV(headPos, 20, headColor);
             bow.Draw();
             Raylib.DrawLineEx(armPos, armPos + (90 - bow.rotation).ToVector() * 40, 8, armColor);
-            walkingRay.Draw();
-
+            //walkingRay.Draw();
         }
 
         public void PlatformerMovement(List<IBody> bodies)

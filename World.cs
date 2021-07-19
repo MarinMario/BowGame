@@ -7,11 +7,11 @@ namespace Game
 {
     class World : IScene
     {
-        List<IBody> bodies = new List<IBody>();
+        List<IBody> envBodies = new List<IBody>();
+        List<IBody> monsterBodies = new List<IBody>();
         Player player = new Player();
         Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1);
         List<MapObject> mapData = LevelEditor.Load("test");
-        List<Monster> monsters = new List<Monster>();
         Bat bat = new Bat(new Vector2(300, -600));
 
 
@@ -28,22 +28,23 @@ namespace Game
                     var pos = new Vector2(obj.X, obj.Y);
                     var texture = Texture.Tile[obj.Name].texture;
                     var size = new Vector2(texture.width, texture.height);
-                    bodies.Add(new SimpleBody(new CollisionBody(pos, size)));
+                    envBodies.Add(new SimpleBody(new CollisionBody(pos, size)));
                 }
             }
-            
+
+            monsterBodies.Add(bat);
         }
 
         public void Update()
         {
-            player.Update(bodies, camera);
+            player.Update(envBodies, monsterBodies, camera);
             camera.offset = new Vector2(Raylib.GetScreenWidth() / 2 - player.Body.size.X / 2, Raylib.GetScreenHeight());
             camera.target = camera.target.MoveTowards(new Vector2(player.Body.position.X, 0), Raylib.GetFrameTime() * 500, 1);
 
             if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) && Raylib.IsKeyPressed(KeyboardKey.KEY_L))
                 Program.scene = new LevelEditor();
 
-            bat.Update(player, bodies);
+            bat.Update(player, envBodies);
 
         }
 
