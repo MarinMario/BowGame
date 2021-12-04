@@ -1,7 +1,6 @@
 ﻿using Raylib_cs;
 using Game.Engine;
 using System.Numerics;
-using System;
 
 namespace Game.Scene
 {
@@ -10,6 +9,8 @@ namespace Game.Scene
         Button play = new Button(Vector2.Zero, Vector2.Zero, "Play", GuiStyle.Default());
         Button settings = new Button(Vector2.Zero, Vector2.Zero, "Settings", GuiStyle.Default());
         Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1);
+        Feature.Transition transition = new Feature.Transition();
+
         public MainMenu()
         {
 
@@ -29,7 +30,9 @@ namespace Game.Scene
             camera.offset = new Vector2(width, height) / 2;
 
             if (play.Active(camera.ScaledMousePosition()))
-                Program.scene = new World();
+                transition.FadeOut(new Scene.World());
+
+            transition.Update();
         }
 
         public void Draw()
@@ -40,6 +43,9 @@ namespace Game.Scene
             settings.Draw(camera.ScaledMousePosition());
 
             Raylib.EndMode2D();
+
+
+            transition.Draw();
         }
     }
 }

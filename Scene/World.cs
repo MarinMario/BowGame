@@ -15,6 +15,7 @@ namespace Game.Scene
         Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1);
         List<MapObject> mapData = LevelEditor.Load("test");
         Bat bat = new Bat(new Vector2(300, -600));
+        Transition transition = new Transition();
 
 
         public World()
@@ -47,6 +48,7 @@ namespace Game.Scene
                 Program.scene = new LevelEditor();
 
             bat.Update(player, envBodies);
+            transition.Update();
 
         }
 
@@ -64,6 +66,8 @@ namespace Game.Scene
             //foreach (var body in bodies) body.Body.Draw(new Color(100, 0, 0, 100));
 
             Raylib.EndMode2D();
+
+            transition.Draw();
         }
 
 
