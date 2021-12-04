@@ -4,6 +4,7 @@ using System.Numerics;
 using Raylib_cs;
 using System.Text.Json;
 using Game.Engine;
+using Game.Feature;
 
 namespace Game.Scene
 {
@@ -35,7 +36,7 @@ namespace Game.Scene
         {
             foreach (var mo in Enum.GetValues(typeof(TileName)))
             {
-                var texture = Asset.Tile[(TileName)mo].texture;
+                var texture = Tile.T[(TileName)mo].texture;
                 var scale = (float)cellSize / texture.width;
                 tileButtons.Add(new TextureButton(Vector2.Zero, scale, Color.WHITE, texture));
             }
@@ -79,7 +80,7 @@ namespace Game.Scene
                 if ((Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && showGrid) || Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
                 {
                     var p = camera.target + (mouse - camera.offset) / camera.zoom;
-                    var texture = Asset.Tile[selectedObject].texture;
+                    var texture = Tile.T[selectedObject].texture;
                     var pos = showGrid ? PointToTile(p) : p - new Vector2(texture.width, texture.height) / 2;
                     var mapObject = new MapObject(selectedObject, pos.X, pos.Y);
                     var contains = false;
@@ -97,7 +98,7 @@ namespace Game.Scene
                     for (var i = objects.Count - 1; i >= 0; i--)
                     {
                         var o = objects[i];
-                        var t = Asset.Tile[o.Name].texture;
+                        var t = Tile.T[o.Name].texture;
                         if(p.X > o.X && p.Y > o.Y && p.X < o.X + t.width && p.Y < o.Y + t.height)
                             objects.RemoveAt(i);
                     }
@@ -133,7 +134,7 @@ namespace Game.Scene
             Raylib.BeginMode2D(camera);
             {
                 foreach (var o in objects)
-                    Raylib.DrawTextureEx(Asset.Tile[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
+                    Raylib.DrawTextureEx(Tile.T[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
                    
                 if (showGrid)
                 {
@@ -191,8 +192,6 @@ namespace Game.Scene
             return result;
         }
     }
-
-    
     struct MapObject
     {
         public TileName Name { get; set; }

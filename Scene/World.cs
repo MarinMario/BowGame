@@ -21,14 +21,14 @@ namespace Game.Scene
         {
             //bodies.Add(player);
             camera.target = player.Body.position;
-
+            
             foreach (var obj in mapData)
             {
-                var type = Asset.Tile[obj.Name].type;
+                var type = Tile.T[obj.Name].type;
                 if (type == TileType.Collision)
                 {
                     var pos = new Vector2(obj.X, obj.Y);
-                    var texture = Asset.Tile[obj.Name].texture;
+                    var texture = Tile.T[obj.Name].texture;
                     var size = new Vector2(texture.width, texture.height);
                     envBodies.Add(new SimpleBody(new CollisionBody(pos, size)));
                 }
@@ -56,7 +56,7 @@ namespace Game.Scene
             Raylib.BeginMode2D(camera);
             
             foreach (var o in mapData)
-                Raylib.DrawTextureEx(Asset.Tile[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
+                Raylib.DrawTextureEx(Tile.T[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
 
             bat.Draw();
 

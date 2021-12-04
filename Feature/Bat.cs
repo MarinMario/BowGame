@@ -159,11 +159,11 @@ namespace Game.Feature
         public void Draw()
         {
             var size = new Rectangle(0, 0, 64, 64);
-            Raylib.DrawTexturePro(Asset.BatWing, size, new Rectangle(Body.position.X + 32, Body.position.Y + 32, 64, 64), new Vector2(64, 0), wingAngle.value, Color.WHITE);
-            var textureFlipped = Asset.BatWing;
+            Raylib.DrawTexturePro(Texture.BatWing, size, new Rectangle(Body.position.X + 32, Body.position.Y + 32, 64, 64), new Vector2(64, 0), wingAngle.value, Color.WHITE);
+            var textureFlipped = Texture.BatWing;
             textureFlipped.width = -64;
             Raylib.DrawTexturePro(textureFlipped, size, new Rectangle(Body.position.X + 32, Body.position.Y + 32, 64, 64), Vector2.Zero, -wingAngle.value, Color.WHITE);
-            Raylib.DrawTextureEx(alive ? Asset.BatHead : Asset.BatHeadDead, Body.position, 0, 1, Color.WHITE);
+            Raylib.DrawTextureEx(alive ? Texture.BatHead : Texture.BatHeadDead, Body.position, 0, 1, Color.WHITE);
         }
 
         public void TakeDamage(int damage, Vector2 velocity)

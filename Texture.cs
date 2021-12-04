@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 namespace Game
 {
-    enum TileType { Decor, Collision }
-    public enum TileName { Earth1, Earth2, Earth3 }
     static class Texture
     {
         public static Texture2D Player = Raylib.LoadTexture("Content/Player.png");
@@ -18,24 +16,8 @@ namespace Game
         public static Texture2D BatHeadDead = Raylib.LoadTexture("Content/BatHeadDead.png");
         public static Texture2D BatWing = Raylib.LoadTexture("Content/BatWing.png");
 
-        public static Dictionary<TileName, TTT> Tile = new Dictionary<TileName, TTT>
-        {
-            { TileName.Earth1, new TTT(TileType.Collision, Raylib.LoadTexture("Content/Tile/Earth1.png")) },
-            { TileName.Earth2, new TTT(TileType.Decor, Raylib.LoadTexture("Content/Tile/Earth2.png")) },
-            { TileName.Earth3, new TTT(TileType.Decor, Raylib.LoadTexture("Content/Tile/Earth3.png")) },
-
-        };
-    }
-
-    //TTT = TypeTextureTuple
-    struct TTT
-    {
-        public TileType type;
-        public Texture2D texture;
-        public TTT(TileType type, Texture2D texture)
-        {
-            this.type = type;
-            this.texture = texture;
-        }
+        public static Texture2D Earth1 = Raylib.LoadTexture("Content/Tile/Earth1.png");
+        public static Texture2D Earth2 = Raylib.LoadTexture("Content/Tile/Earth2.png");
+        public static Texture2D Earth3 = Raylib.LoadTexture("Content/Tile/Earth3.png");
     }
 }
