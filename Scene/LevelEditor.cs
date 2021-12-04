@@ -53,7 +53,7 @@ namespace Game.Scene
                 var b = tileButtons[i].button;
                 tileButtons[i].button.position = new Vector2(Raylib.GetScreenWidth() - bannedX / 2 - b.size.X / 2, i * 70 + bannedY + 10);
                 tileButtons[i].tint = i == (int)selectedObject ? Color.WHITE : Color.GRAY;
-                if (b.Active())
+                if (b.Active(Raylib.GetMousePosition()))
                     selectedObject = (TileName)i;
             }
 

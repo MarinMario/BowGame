@@ -20,20 +20,20 @@ namespace Game.Engine
             this.style = style;
         }
 
-        public bool Hover()
+        public bool Hover(Vector2 mousePosition)
         {
-            var m = Raylib.GetMousePosition();
+            var m = mousePosition;
             return m.X > position.X && m.Y > position.Y && m.X < position.X + size.X && m.Y < position.Y + size.Y;
         }
 
-        public bool Active()
+        public bool Active(Vector2 mousePosition)
         {
-            return Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && Hover();
+            return Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && Hover(mousePosition);
         }
 
-        public void Draw()
+        public void Draw(Vector2 mousePosition)
         {
-            var s = Active() ? style.active : Hover() ? style.hover : style.normal;
+            var s = Active(mousePosition) ? style.active : Hover(mousePosition) ? style.hover : style.normal;
             var textSize = Raylib.MeasureTextEx(s.font, text, s.fontSize, s.spacing);
             var textPos = position + size / 2 - textSize / 2;
 
@@ -188,7 +188,7 @@ namespace Game.Engine
         {
             public Font font = Raylib.GetFontDefault();
             public Color fontColor = Color.BLACK;
-            public int fontSize = 20;
+            public int fontSize = 30;
             public int spacing = 1;
             public Color backgroundColor = Color.LIGHTGRAY;
             public Color borderColor = Color.BLACK;

@@ -21,7 +21,6 @@ namespace Game.Scene
         {
             //bodies.Add(player);
             camera.target = player.Body.position;
-            
             foreach (var obj in mapData)
             {
                 var type = Tile.T[obj.Name].type;
@@ -42,6 +41,7 @@ namespace Game.Scene
             player.Update(envBodies, monsterBodies, camera);
             camera.offset = new Vector2(Raylib.GetScreenWidth() / 2 - player.Body.size.X / 2, Raylib.GetScreenHeight());
             camera.target = camera.target.MoveTowards(new Vector2(player.Body.position.X, 0), Raylib.GetFrameTime() * 500, 1);
+            camera.zoom = Util.ZoomToKeepRes(Program.res.x, Program.res.y);
 
             if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) && Raylib.IsKeyPressed(KeyboardKey.KEY_L))
                 Program.scene = new LevelEditor();
@@ -52,7 +52,6 @@ namespace Game.Scene
 
         public void Draw()
         {
-            camera.zoom = (float)Raylib.GetScreenHeight() / 1080f;
             Raylib.BeginMode2D(camera);
             
             foreach (var o in mapData)

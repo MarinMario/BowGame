@@ -44,6 +44,19 @@ namespace Game
         {
             return camera.target + (Raylib.GetMousePosition() - camera.offset) / camera.zoom;
         }
+
+        public static float ZoomToKeepRes(int resx, int resy)
+        {
+            var width = Raylib.GetScreenWidth();
+            var height = Raylib.GetScreenHeight();
+            var zoom = 1f;
+            if (width < height)
+                zoom = (float)width / (float)resx;
+            else
+                zoom = (float)height / (float)resy;
+
+            return zoom;
+        }
     }
 
     struct Raycast
