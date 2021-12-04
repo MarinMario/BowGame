@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using Game.Engine;
 
-namespace Game
+namespace Game.Scene
 {
     class LevelEditor : IScene
     {
@@ -35,7 +35,7 @@ namespace Game
         {
             foreach (var mo in Enum.GetValues(typeof(TileName)))
             {
-                var texture = Texture.Tile[(TileName)mo].texture;
+                var texture = Asset.Tile[(TileName)mo].texture;
                 var scale = (float)cellSize / texture.width;
                 tileButtons.Add(new TextureButton(Vector2.Zero, scale, Color.WHITE, texture));
             }
@@ -79,7 +79,7 @@ namespace Game
                 if ((Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && showGrid) || Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
                 {
                     var p = camera.target + (mouse - camera.offset) / camera.zoom;
-                    var texture = Texture.Tile[selectedObject].texture;
+                    var texture = Asset.Tile[selectedObject].texture;
                     var pos = showGrid ? PointToTile(p) : p - new Vector2(texture.width, texture.height) / 2;
                     var mapObject = new MapObject(selectedObject, pos.X, pos.Y);
                     var contains = false;
@@ -97,7 +97,7 @@ namespace Game
                     for (var i = objects.Count - 1; i >= 0; i--)
                     {
                         var o = objects[i];
-                        var t = Texture.Tile[o.Name].texture;
+                        var t = Asset.Tile[o.Name].texture;
                         if(p.X > o.X && p.Y > o.Y && p.X < o.X + t.width && p.Y < o.Y + t.height)
                             objects.RemoveAt(i);
                     }
@@ -133,7 +133,7 @@ namespace Game
             Raylib.BeginMode2D(camera);
             {
                 foreach (var o in objects)
-                    Raylib.DrawTextureEx(Texture.Tile[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
+                    Raylib.DrawTextureEx(Asset.Tile[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
                    
                 if (showGrid)
                 {
@@ -192,7 +192,7 @@ namespace Game
         }
     }
 
-    enum TileType { Decor, Collision }
+    
     struct MapObject
     {
         public TileName Name { get; set; }

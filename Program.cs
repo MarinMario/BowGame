@@ -6,13 +6,13 @@ namespace Game
 {
     class Program
     {
-        public static IScene scene;
+        public static Scene.IScene scene;
         static void Main(string[] args)
         {
             Raylib.InitWindow(1280, 720, "Game");
             Raylib.SetWindowState(ConfigFlag.FLAG_WINDOW_RESIZABLE);
             Raylib.SetExitKey(KeyboardKey.KEY_END);
-            scene = new World();
+            scene = new Scene.World();
 
             while (!Raylib.WindowShouldClose())
             {
@@ -27,11 +27,5 @@ namespace Game
 
             Raylib.CloseWindow();
         }
-    }
-
-    interface IScene
-    {
-        void Update();
-        void Draw();
     }
 }

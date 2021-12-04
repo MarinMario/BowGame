@@ -2,7 +2,7 @@
 using Raylib_cs;
 using System.Numerics;
 
-namespace Game
+namespace Game.Engine
 {
     class AnimatedSprite
     {

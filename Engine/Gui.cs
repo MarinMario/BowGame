@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Raylib_cs;
 using System.Numerics;
 
-namespace Game
+namespace Game.Engine
 {
     class Button
     {

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
+using Game.Engine;
+using Game.Feature;
 
-namespace Game
+namespace Game.Scene
 {
     class World : IScene
     {
@@ -22,11 +24,11 @@ namespace Game
 
             foreach (var obj in mapData)
             {
-                var type = Texture.Tile[obj.Name].type;
+                var type = Asset.Tile[obj.Name].type;
                 if (type == TileType.Collision)
                 {
                     var pos = new Vector2(obj.X, obj.Y);
-                    var texture = Texture.Tile[obj.Name].texture;
+                    var texture = Asset.Tile[obj.Name].texture;
                     var size = new Vector2(texture.width, texture.height);
                     envBodies.Add(new SimpleBody(new CollisionBody(pos, size)));
                 }
@@ -54,7 +56,7 @@ namespace Game
             Raylib.BeginMode2D(camera);
             
             foreach (var o in mapData)
-                Raylib.DrawTextureEx(Texture.Tile[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
+                Raylib.DrawTextureEx(Asset.Tile[o.Name].texture, new Vector2(o.X, o.Y), 0, 1, Color.WHITE);
 
             bat.Draw();
 

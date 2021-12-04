@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Raylib_cs;
 using System.Numerics;
+using Game.Engine;
 
-namespace Game
+namespace Game.Feature
 {
     class Bow
     {
@@ -60,10 +61,10 @@ namespace Game
         public void Draw()
         {
             Raylib.DrawTexturePro(
-                Texture.Bow,
-                new Rectangle(0, 0, Texture.Bow.width, Texture.Bow.height),
-                new Rectangle(position.X, position.Y, Texture.Bow.width, Texture.Bow.height),
-                new Vector2(0, Texture.Bow.height / 2), rotation, Color.WHITE
+                Asset.Bow,
+                new Rectangle(0, 0, Asset.Bow.width, Asset.Bow.height),
+                new Rectangle(position.X, position.Y, Asset.Bow.width, Asset.Bow.height),
+                new Vector2(0, Asset.Bow.height / 2), rotation, Color.WHITE
             );
 
             foreach (var arrow in arrows)
@@ -109,10 +110,10 @@ namespace Game
         public void Draw()
         {
             Raylib.DrawTexturePro(
-                Texture.Arrow,
-                new Rectangle(0, 0, Texture.Arrow.width, Texture.Arrow.height),
-                new Rectangle(position.X, position.Y, Texture.Arrow.width, Texture.Arrow.height),
-                new Vector2(Texture.Arrow.width, Texture.Arrow.height) / 2,
+                Asset.Arrow,
+                new Rectangle(0, 0, Asset.Arrow.width, Asset.Arrow.height),
+                new Rectangle(position.X, position.Y, Asset.Arrow.width, Asset.Arrow.height),
+                new Vector2(Asset.Arrow.width, Asset.Arrow.height) / 2,
                 rotation, Color.WHITE
             );
 
