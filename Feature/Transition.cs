@@ -11,7 +11,7 @@ namespace Game.Feature
         Animation fadeIn = new Animation(new KeyFrame[] { new KeyFrame(0, 0.5f) }, 255);
         Animation fadeOut = new Animation(new KeyFrame[] { new KeyFrame(255, 0.5f) }, 0);
         bool playFadeOut = false;
-        Scene.IScene nextScene;
+        IScene nextScene;
 
         public void Update()
         {
@@ -24,7 +24,7 @@ namespace Game.Feature
                 Program.scene = nextScene;
         }
 
-        public void FadeOut(Scene.IScene nextScene)
+        public void FadeOut(IScene nextScene)
         {
             this.nextScene = nextScene;
             playFadeOut = true;

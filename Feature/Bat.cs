@@ -117,13 +117,6 @@ namespace Game.Feature
                     }
                 }
 
-                for (var i = arrows.Count - 1; i >= 0; i--)
-                    if (Body.Contains(arrows[i].position))
-                    {
-                
-                        arrows.RemoveAt(i);
-                    }
-
                 if (Vector2.Distance(target, position) < 100 && player.stopMovementTimer < 0)
                 {
                     player.stopMovementTimer = 1f;

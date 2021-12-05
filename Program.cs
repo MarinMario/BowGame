@@ -6,7 +6,7 @@ namespace Game
 {
     class Program
     {
-        public static Scene.IScene scene;
+        public static Feature.IScene scene;
         public static (int x, int y) res = (1920, 1080);
         static void Main(string[] args)
         {

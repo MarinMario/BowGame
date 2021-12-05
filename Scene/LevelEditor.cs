@@ -32,6 +32,8 @@ namespace Game.Scene
 
         TileName selectedObject = TileName.Earth1;
 
+        Transition transition = new Transition();
+
         public LevelEditor()
         {
             foreach (var mo in Enum.GetValues(typeof(TileName)))
@@ -123,8 +125,10 @@ namespace Game.Scene
                     objects = Load(fileNameBox.text);
 
                 if (Raylib.IsKeyPressed(KeyboardKey.KEY_P))
-                    Program.scene = new World();
+                    transition.FadeOut(new World());
             }
+
+            transition.Update();
         }
 
         public void Draw()
@@ -160,6 +164,8 @@ namespace Game.Scene
             fileNameBox.Draw();
             foreach (var button in tileButtons)
                 button.Draw();
+
+            transition.Draw();
         }
 
         Vector2 PointToTile(Vector2 p)
@@ -190,19 +196,6 @@ namespace Game.Scene
                 Console.WriteLine(e);
             }
             return result;
-        }
-    }
-    struct MapObject
-    {
-        public TileName Name { get; set; }
-        public float X { get; set; }
-        public float Y { get; set; }
-
-        public MapObject(TileName name, float x, float y)
-        {
-            Name = name;
-            X = x;
-            Y = y;
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
-using Game.Engine;
+using System.Text.Json;
 
-namespace Game
+
+namespace Game.Engine
 {
     static class Util
     {
@@ -20,7 +20,7 @@ namespace Game
         {
             var result = vector;
             var dir = target != vector ? Vector2.Normalize(target - vector) * speed : Vector2.Zero;
-            
+
             if (Math.Abs(target.X - vector.X) > margin)
                 result.X += dir.X;
             if (Math.Abs(target.Y - vector.Y) > margin)
@@ -57,45 +57,27 @@ namespace Game
 
             return zoom;
         }
-    }
 
-    struct Raycast
-    {
-        public Vector2 position;
-        public float angle;
-        public float maxLength;
-        float length;
-
-        public Raycast(Vector2 position, float angle, float maxLength)
+        public static void Save<T>(string fileName, T data)
         {
-            this.position = position;
-            this.angle = angle;
-            this.maxLength = maxLength;
-            length = 0;
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            System.IO.File.WriteAllText($"{fileName}", JsonSerializer.Serialize(data, options));
         }
 
-        public (Vector2 position, float length) Cast(List<IBody> bodies)
+        public static T Load<T>(string fileName)
         {
-            length = 0;
-            while(length < maxLength)
+            var result = default(T);
+            try
             {
-                foreach (var body in bodies)
-                    if (body.Body.Contains(EndPosition(length)))
-                        return (position: EndPosition(length), length: length);
-                length += 10;
+                var file = System.IO.File.ReadAllText($"{fileName}");
+                result = JsonSerializer.Deserialize<T>(file);
             }
-            return (EndPosition(length), maxLength);
-        }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
-        public void Draw()
-        {
-            Raylib.DrawLineEx(position, EndPosition(length), 2, Color.RED);
-            Raylib.DrawCircleV(EndPosition(length), 10, Color.BLUE);
-        }
-
-        Vector2 EndPosition(float length)
-        {
-            return position + angle.ToVector() * length;
+            return result;
         }
     }
 }

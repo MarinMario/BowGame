@@ -4,11 +4,10 @@ using System.Numerics;
 
 namespace Game.Scene
 {
-    class MainMenu : IScene
+    class MainMenu : Feature.IScene
     {
-        Button play = new Button(Vector2.Zero, Vector2.Zero, "Play", GuiStyle.Default());
-        Button settings = new Button(Vector2.Zero, Vector2.Zero, "Settings", GuiStyle.Default());
-        Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1);
+        Button play = new Button(Vector2.Zero, new Vector2(300, 100), "Play", GuiStyle.Default());
+        Button settings = new Button(Vector2.Zero, new Vector2(300, 100), "Settings", GuiStyle.Default());
         Feature.Transition transition = new Feature.Transition();
 
         public MainMenu()
@@ -18,31 +17,28 @@ namespace Game.Scene
 
         public void Update()
         {
-            play.size = new Vector2(300, 100);
-            settings.size = new Vector2(300, 100);
-
             var width = Raylib.GetScreenWidth();
             var height = Raylib.GetScreenHeight();
+            var size = new Vector2(width, height);
 
-            play.position = -play.size / 2 + new Vector2(0, -60);
-            settings.position = -settings.size / 2 + new Vector2(0, 60);
-            camera.zoom = Util.ZoomToKeepRes(Program.res.x, Program.res.y);
-            camera.offset = new Vector2(width, height) / 2;
+            play.position = size / 2 - play.size / 2 + new Vector2(0, -60);
+            settings.position = size / 2 - settings.size / 2 + new Vector2(0, 60);
 
-            if (play.Active(camera.ScaledMousePosition()))
+            var mousePos = Raylib.GetMousePosition();
+            if (play.Active(mousePos))
                 transition.FadeOut(new Scene.World());
+
+            if (settings.Active(mousePos))
+                transition.FadeOut(new Scene.Settings());
 
             transition.Update();
         }
 
         public void Draw()
         {
-            Raylib.BeginMode2D(camera);
-
-            play.Draw(camera.ScaledMousePosition());
-            settings.Draw(camera.ScaledMousePosition());
-
-            Raylib.EndMode2D();
+            var mousePos = Raylib.GetMousePosition();
+            play.Draw(mousePos);
+            settings.Draw(mousePos);
 
 
             transition.Draw();

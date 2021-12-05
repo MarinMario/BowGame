@@ -11,6 +11,7 @@ namespace Game.Engine
         public Vector2 size;
         public string text;
         public GuiStyle style;
+        public bool selected = false;
 
         public Button(Vector2 position, Vector2 size, string text, GuiStyle style)
         {
@@ -33,7 +34,7 @@ namespace Game.Engine
 
         public void Draw(Vector2 mousePosition)
         {
-            var s = Active(mousePosition) ? style.active : Hover(mousePosition) ? style.hover : style.normal;
+            var s = Active(mousePosition) ? style.active : selected ? style.selected : Hover(mousePosition) ? style.hover : style.normal;
             var textSize = Raylib.MeasureTextEx(s.font, text, s.fontSize, s.spacing);
             var textPos = position + size / 2 - textSize / 2;
 
@@ -159,6 +160,7 @@ namespace Game.Engine
         public Style normal = new Style();
         public Style hover = new Style();
         public Style active = new Style();
+        public Style selected = new Style();
 
         public static GuiStyle Default()
         {
@@ -166,20 +168,24 @@ namespace Game.Engine
 
             var bgColor = new Color(255, 226, 104, 255);
             var borderColor = new Color(54, 69, 71, 255);
-            var borderColorHover = new Color(35, 45, 46, 255);
+            var bgColorHover = new Color(255, 212, 33, 255);
             var bgColorActive = new Color(255, 176, 55, 255);
 
             s.normal.fontColor = borderColor;
             s.normal.backgroundColor = bgColor;
             s.normal.borderColor = borderColor;
 
-            s.hover.fontColor = borderColorHover;
-            s.hover.backgroundColor = bgColor;
-            s.hover.borderColor = borderColorHover;
+            s.hover.fontColor = borderColor;
+            s.hover.backgroundColor = bgColorHover;
+            s.hover.borderColor = borderColor;
 
-            s.active.fontColor = borderColorHover;
+            s.active.fontColor = borderColor;
             s.active.backgroundColor = bgColorActive;
-            s.active.borderColor = borderColorHover;
+            s.active.borderColor = borderColor;
+
+            s.selected.fontColor = borderColor;
+            s.selected.backgroundColor = bgColorActive;
+            s.selected.borderColor = borderColor;
 
             return s;
         }
@@ -188,7 +194,7 @@ namespace Game.Engine
         {
             public Font font = Raylib.GetFontDefault();
             public Color fontColor = Color.BLACK;
-            public int fontSize = 30;
+            public int fontSize = 20;
             public int spacing = 1;
             public Color backgroundColor = Color.LIGHTGRAY;
             public Color borderColor = Color.BLACK;

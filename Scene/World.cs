@@ -14,12 +14,15 @@ namespace Game.Scene
         Player player = new Player();
         Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1);
         List<MapObject> mapData = LevelEditor.Load("test");
-        Bat bat = new Bat(new Vector2(300, -600));
         Transition transition = new Transition();
-
+        List<Bat> bats = new List<Bat>();
+        Bat bat = new Bat(new Vector2(300, -600));
 
         public World()
         {
+            //for (var i = 0; i < 1; i++)
+            //    bats.Add(new Bat(new Vector2(i * 300, -600)));
+
             //bodies.Add(player);
             camera.target = player.Body.position;
             foreach (var obj in mapData)
@@ -40,15 +43,19 @@ namespace Game.Scene
         public void Update()
         {
             player.Update(envBodies, monsterBodies, camera);
-            camera.offset = new Vector2(Raylib.GetScreenWidth() / 2 - player.Body.size.X / 2, Raylib.GetScreenHeight());
-            camera.target = camera.target.MoveTowards(new Vector2(player.Body.position.X, 0), Raylib.GetFrameTime() * 500, 1);
+            camera.offset = new Vector2(Raylib.GetScreenWidth() / 2 - player.Body.size.X / 2, Raylib.GetScreenHeight() / 2 - player.Body.size.Y / 2);
+            //camera.target = camera.target.MoveTowards(player.Body.position, Raylib.GetFrameTime() * 500, 1);
+            camera.target = player.Body.position - new Vector2(0, 200);
             camera.zoom = Util.ZoomToKeepRes(Program.res.x, Program.res.y);
 
             if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) && Raylib.IsKeyPressed(KeyboardKey.KEY_L))
-                Program.scene = new LevelEditor();
+                transition.FadeOut(new LevelEditor());
+
+            transition.Update();
+            foreach (var b in bats)
+                b.Update(player, envBodies);
 
             bat.Update(player, envBodies);
-            transition.Update();
 
         }
 
@@ -62,12 +69,17 @@ namespace Game.Scene
             bat.Draw();
 
             player.Draw();
+            foreach (var b in bats)
+                b.Draw();
 
             //foreach (var body in bodies) body.Body.Draw(new Color(100, 0, 0, 100));
 
             Raylib.EndMode2D();
 
             transition.Draw();
+            //Raylib.DrawFPS(0, 0);
+            Raylib.DrawText(bat.Health.ToString(), 0, 0, 20, Color.BLACK);
+
         }
 
 

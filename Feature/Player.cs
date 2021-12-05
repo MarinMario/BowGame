@@ -10,9 +10,9 @@ namespace Game.Feature
     class Player : IBody
     {
         float speed = 400;
-        float gravity = 1200;
+        float gravity = 2000;
         public Vector2 velocity = Vector2.Zero;
-        float jumpForce = 700;
+        float jumpForce = 1400;
         int maxJumps = 999;
         int currentJumps = 0;
         public float stopMovementTimer = 0;
@@ -82,7 +82,7 @@ namespace Game.Feature
             Raylib.DrawCircleV(headPos, 20, headColor);
             bow.Draw();
             Raylib.DrawLineEx(armPos, armPos + (90 - bow.rotation).ToVector() * 40, 8, armColor);
-            //walkingRay.Draw();
+            walkingRay.Draw();
         }
 
         public void PlatformerMovement(List<IBody> bodies)

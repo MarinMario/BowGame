@@ -1,6 +1,6 @@
 ﻿
 
-namespace Game.Scene
+namespace Game.Feature
 {
     interface IScene
     {
