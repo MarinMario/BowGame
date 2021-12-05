@@ -77,8 +77,8 @@ namespace Game.Scene
             Raylib.EndMode2D();
 
             transition.Draw();
-            //Raylib.DrawFPS(0, 0);
-            Raylib.DrawText(bat.Health.ToString(), 0, 0, 20, Color.BLACK);
+            Raylib.DrawFPS(100, 0);
+            //Raylib.DrawText(bat.Health.ToString(), 0, 0, 20, Color.BLACK);
 
         }
 

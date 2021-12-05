@@ -90,9 +90,9 @@ namespace Game.Feature
             var delta = Raylib.GetFrameTime();
 
             var xdir = 0;
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
+            if (Raylib.IsKeyDown(Program.input.Right))
                 xdir = 1;
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_A))
+            if (Raylib.IsKeyDown(Program.input.Left))
                 xdir = -1;
 
             velocity.Y += gravity * delta;
@@ -103,7 +103,7 @@ namespace Game.Feature
             if (stopMovementTimer <= 0)
             {
                 velocity.X = xdir * speed;
-                if (Raylib.IsKeyPressed(KeyboardKey.KEY_W) && currentJumps < maxJumps)
+                if (Raylib.IsKeyPressed(Program.input.Jump) && currentJumps < maxJumps)
                 {
                     velocity.Y = -jumpForce;
                     currentJumps += 1;
@@ -111,8 +111,6 @@ namespace Game.Feature
             }
             else
                 velocity.X = velocity.X.MoveTowards(0, 500 * delta, 1);
-
-
 
 
             var nextVel = velocity * delta;
@@ -139,11 +137,11 @@ namespace Game.Feature
         public void TopDownMovement(List<IBody> bodies)
         {
             var dir = Vector2.Zero;
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
+            if (Raylib.IsKeyDown(Program.input.Right))
                 dir.X = 1;
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_A))
+            if (Raylib.IsKeyDown(Program.input.Left))
                 dir.X = -1;
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_W))
+            if (Raylib.IsKeyDown(Program.input.Jump))
                 dir.Y = -1;
             if (Raylib.IsKeyDown(KeyboardKey.KEY_S))
                 dir.Y = 1;

@@ -14,22 +14,21 @@ namespace Game.Scene
 
         int selected = -1;
 
-        //enum where each value corresponds to a property in Input.cs
-        enum Key { Jump, Left, Right }
-
-        List<(Key key, Button button)> keys = new List<(Key, Button)>();
+        List<(string key, Button button)> keys = new List<(string, Button)>();
 
         public Settings()
         {
             //loading keybindings struct
-            input = Util.Load<Feature.Input>("inputTest.json");
+            input = Util.Load<Feature.Input>(Program.keybindingsPath);
+            if (input == null)
+                input = Feature.Input.Default();
+            Program.input = input;
 
             //initalizing button names based on the loaded data
-            foreach (Key key in Enum.GetValues(typeof(Key)))
+            foreach (var key in typeof(Feature.Input).GetProperties())
             {
-                var keyName = key.ToString();
-                var keyVal = typeof(Feature.Input).GetProperty(key.ToString()).GetValue(input).ToString().Remove(0, 4);
-                keys.Add((key, new Button(Vector2.Zero, new Vector2(300, 100), keyName + ": " + keyVal, GuiStyle.Default())));
+                var keyVal = typeof(Feature.Input).GetProperty(key.Name).GetValue(input).ToString().Remove(0, 4);
+                keys.Add((key.Name, new Button(Vector2.Zero, new Vector2(300, 100), key.Name + ": " + keyVal, GuiStyle.Default())));
             }
         }
 
@@ -57,12 +56,13 @@ namespace Game.Scene
                 var key = (KeyboardKey)Raylib.GetKeyPressed();
                 if (key != 0)
                 {
-                    typeof(Feature.Input).GetProperty(keys[selected].key.ToString()).SetValue(input, key);
-                    var keyVal = typeof(Feature.Input).GetProperty(keys[selected].key.ToString()).GetValue(input).ToString().Remove(0, 4);
-                    keys[selected].button.text = keys[selected].key.ToString() + ": " + keyVal;
+                    typeof(Feature.Input).GetProperty(keys[selected].key).SetValue(input, key);
+                    var keyVal = typeof(Feature.Input).GetProperty(keys[selected].key).GetValue(input).ToString().Remove(0, 4);
+                    keys[selected].button.text = keys[selected].key + ": " + keyVal;
                     keys[selected].button.selected = false;
                     selected = -1;
-                    Util.Save("inputTest.json", input);
+                    Util.Save(Program.keybindingsPath, input);
+                    Program.input = input;
                 }
             }
 
