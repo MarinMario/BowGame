@@ -37,7 +37,7 @@ namespace Game.Feature
 
             if (charge)
             {
-                speedTimer += delta;
+                speedTimer += 4 * delta;
                 speedTimer = Math.Clamp(speedTimer, 0, 1);
                 var r = (90 - rotation).ToVector();
                 currentArrow = new Arrow(position + r * 50 - r * 25 * speedTimer, rotation, speedTimer * 3000, 100, 2000);

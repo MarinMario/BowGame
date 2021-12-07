@@ -17,6 +17,7 @@ namespace Game.Scene
         Transition transition = new Transition();
         List<Bat> bats = new List<Bat>();
         Bat bat = new Bat(new Vector2(300, -600));
+        PauseMenu pauseMenu = new PauseMenu();
 
         public World()
         {
@@ -42,6 +43,15 @@ namespace Game.Scene
 
         public void Update()
         {
+            
+            pauseMenu.Update();
+            if(pauseMenu.leaveButtonActive) 
+                transition.FadeOut(new MainMenu());
+            transition.Update();
+
+            //everything after this statement won't be update when the game is paused
+            if (pauseMenu.paused) return;
+
             player.Update(envBodies, monsterBodies, camera);
             camera.offset = new Vector2(Raylib.GetScreenWidth() / 2 - player.Body.size.X / 2, Raylib.GetScreenHeight() / 2 - player.Body.size.Y / 2);
             //camera.target = camera.target.MoveTowards(player.Body.position, Raylib.GetFrameTime() * 500, 1);
@@ -51,12 +61,10 @@ namespace Game.Scene
             if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) && Raylib.IsKeyPressed(KeyboardKey.KEY_L))
                 transition.FadeOut(new LevelEditor());
 
-            transition.Update();
             foreach (var b in bats)
                 b.Update(player, envBodies);
 
             bat.Update(player, envBodies);
-
         }
 
         public void Draw()
@@ -76,6 +84,7 @@ namespace Game.Scene
 
             Raylib.EndMode2D();
 
+            pauseMenu.Draw();
             transition.Draw();
             Raylib.DrawFPS(100, 0);
             //Raylib.DrawText(bat.Health.ToString(), 0, 0, 20, Color.BLACK);
