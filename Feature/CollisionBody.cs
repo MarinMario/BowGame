@@ -3,7 +3,7 @@ using System.Numerics;
 using Raylib_cs;
 using System;
 
-namespace Game.Engine
+namespace Game.Feature
 {
     class CollisionBody
     {

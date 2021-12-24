@@ -12,7 +12,7 @@ namespace Game
         public static string keybindingsPath = "keybindings.json";
         static void Main(string[] args)
         {
-            input = Engine.Util.Load<Feature.Input>(keybindingsPath);
+            input = Feature.Util.Load<Feature.Input>(keybindingsPath);
             if (input == null)
                 input = Feature.Input.Default();
             

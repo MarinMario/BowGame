@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
 
-namespace Game.Engine
+namespace Game.Feature
 {
     struct Raycast
     {
